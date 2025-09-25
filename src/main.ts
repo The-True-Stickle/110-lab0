@@ -10,15 +10,16 @@ class LemonadeStand {
 class GameManager {
     currentDay: number;
     currentWeather: number;
-    currentLemonadePrice: number;
 
 }
 
-function PrintOutNewDay (currentDay: number, currentWeather: number, currentLemonadePrice: number) {
+function PrintOutNewDay (currentDay: number, currentWeather: number) {
     console.log("This is day " + currentDay + "\n");
     console.log("The weather is " + currentWeather + " degrees \n");
-    console.log("Lemonade costs " + currentLemonadePrice + " dollars\n");
-    
+    console.log("Reminder: Making lemonade requires: 1 cup, 2 lemons, and 3 sugar cubes.");
+    console.log("Lemonade sells for $3 per cup. \n");
+    console.log("Reminder: Customers will not buy cups during a blizzard... (or any other cold weathers)");
+
 
 }
 
@@ -30,8 +31,8 @@ function PrintOutDayResults (currentDay: number, currentCash: number, lemonadeSo
     console.log("Supplies:");
     console.log(cupsLeft + "cups");
     console.log(lemonsLeft + "lemons");
-    console.log(sugarLeft + "sugar cubes left");
-    
+    console.log(sugarLeft + "sugar cubes");
+
 
 }
 
@@ -44,10 +45,14 @@ function getRandomInt(minimumNum: number, maximumNum: number) {
 
 console.log("Hello, World! It's lemon time!");
 
-
+//Create the classes necessary for the game to function.
 const gameManager = new GameManager();
 const lemonadeStand = new LemonadeStand();
+
+//Set the values for the first day.
 gameManager.currentDay = 1;
+lemonadeStand.currentCash = 15;
 gameManager.currentWeather = getRandomInt(15, 115);
-gameManager.currentLemonadePrice = getRandomInt(15, 115);
-PrintOutNewDay(gameManager.currentDay, gameManager.currentWeather, gameManager.currentLemonadePrice);
+
+
+PrintOutNewDay(gameManager.currentDay, gameManager.currentWeather);
