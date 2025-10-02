@@ -21,6 +21,12 @@ class GameManager {
     gameOver: boolean;
 }
 
+class LemonShop {
+    cupsPrice: number;
+    lemonsPrice: number;
+    sugarPrice: number;
+}
+
 function PrintOutNewDay (currentDay: number, currentWeather: number) {
     console.log("This is day " + currentDay + "\n");
     console.log("The weather is " + currentWeather + " degrees \n");
@@ -80,6 +86,7 @@ console.log("Hello, World! It's lemon time!\n");
 //Create the classes necessary for the game to function.
 const gameManager = new GameManager();
 const lemonadeStand = new LemonadeStand();
+const lemonShop = new LemonShop();
 
 //Set the values for the first day.
 gameManager.currentDay = 1;
@@ -87,43 +94,150 @@ lemonadeStand.currentCash = 15;
 lemonadeStand.currentSugar = 5;
 lemonadeStand.currentCups = 3;
 lemonadeStand.currentLemons = 4;
-lemonadeStand.currentLemonadeCups = 0;
+lemonadeStand.currentLemonadeCups = 4;
 
 
+function openMenu() {
+    const answer = null;
+    rl.question('I will... (G - Go to the shop, S - Start the day)\n ', (answer) => {
+        console.log("\n----------\n");
+    
+        if (answer == 'S') {
+            CalculateDayResults(gameManager.currentDay, lemonadeStand.currentCups, lemonadeStand.currentLemons, lemonadeStand.currentSugar, gameManager.currentWeather);
+        }
+        else if (answer == 'G') {
+            GoToShop();
+        }
 
+        else {
+            console.log("That is not a valid answer!!");
+            openMenu();
+        }
+    
+        gameManager.gameOver = true;
+        
+      });
+}
 
 function beginNewDay() {
     console.log("\n----------\n");
+    RecalculateShop();
     gameManager.currentWeather = getRandomInt(15, 115);
     PrintOutNewDay(gameManager.currentDay, gameManager.currentWeather);
-    const answer = null;
+
+    openMenu();
 
 
 
-rl.question('I will... (G - Go to the shop, S - Start the day)\n ', (answer) => {
-    console.log("\n----------\n");
-
-    if (answer == 'S') {
-        CalculateDayResults(gameManager.currentDay, lemonadeStand.currentCups, lemonadeStand.currentLemons, lemonadeStand.currentSugar, gameManager.currentWeather);
-    }
-    else if (answer == 'G') {
-        console.log("Going to shop");
-    }
-    else {
-        console.log("That is not a valid answer!!");
-        beginNewDay();
-    }
-
-    gameManager.gameOver = true;
-    
-  });
 }
 
 //Begin the main loop
 
 beginNewDay();
 
+function GoToShop() {
+    console.log("Your current cash is " + lemonadeStand.currentCash + " dollars\n");
+    console.log("Supplies:");
+    console.log(lemonadeStand.currentCups + " cups");
+    console.log(lemonadeStand.currentLemons + " lemons");
+    console.log(lemonadeStand.currentSugar + " sugar cubes");
+    console.log(lemonadeStand.currentLemonadeCups + " cups of lemonade (will expire at end of day!)");
 
+
+    console.log("---");
+
+    console.log("Shop prices today: ");
+    console.log("Two cups: $" + lemonShop.cupsPrice);
+    console.log("Six sugars: $" + lemonShop.sugarPrice);
+    console.log("One lemon: $" + lemonShop.lemonsPrice);
+
+    console.log("\nReminder: Making lemonade requires: 1 cup, 2 lemons, and 3 sugar cubes.");
+    console.log("Lemonade sells for $3 per cup. \n");
+
+
+    const answer2 = null;
+
+
+
+
+    rl.question('I will... (C - Buy Cups, S - Buy Sugar, L - Buy Lemon, M - Make Lemonade, E - Exit Shop)\n ', (answer2) => {
+        console.log("\n----------\n");
+    
+        if (answer2 == 'S') {
+
+            if (lemonadeStand.currentCash >= lemonShop.sugarPrice) {
+                lemonadeStand.currentCash -= lemonShop.sugarPrice;
+                lemonadeStand.currentSugar += 6;
+                console.log("Buying Sugar Cubes...");
+
+            }
+            else {
+                console.log("Not enough money!");
+            }
+
+            
+            GoToShop();
+        }
+        else if (answer2 == 'L') {
+
+            if (lemonadeStand.currentCash >= lemonShop.lemonsPrice) {
+                lemonadeStand.currentCash -= lemonShop.lemonsPrice;
+                lemonadeStand.currentLemons += 1;
+                console.log("Buying Lemons...");
+
+            }
+            else {
+                console.log("Not enough money!");
+            }
+
+            
+            GoToShop();
+        }
+        else if (answer2 == 'C') {
+
+            if (lemonadeStand.currentCash >= lemonShop.cupsPrice) {
+                lemonadeStand.currentCash -= lemonShop.cupsPrice;
+                lemonadeStand.currentCups += 2;
+                console.log("Buying Cups...");
+
+            }
+            else {
+                console.log("Not enough money!");
+            }
+
+            
+            GoToShop();
+        }
+        else if (answer2 == 'M') {
+            if (lemonadeStand.currentCups >= 1 && lemonadeStand.currentLemons >= 2 && lemonadeStand.currentSugar >= 3) {
+                lemonadeStand.currentLemonadeCups += 1;
+                lemonadeStand.currentCups -= 1;
+                lemonadeStand.currentLemons -= 2;
+                lemonadeStand.currentSugar -= 3;
+            }
+            else {
+                console.log("Not enough resources!");
+            }
+
+            GoToShop();
+        }
+        else if (answer2 == 'E') {
+            openMenu();
+        }
+        else {
+            GoToShop();
+        }
+
+})}
+
+
+function RecalculateShop() {
+
+    lemonadeStand.currentLemonadeCups = 0;
+    lemonShop.cupsPrice = getRandomInt(3, 8);
+    lemonShop.sugarPrice = getRandomInt(6, 10);
+    lemonShop.lemonsPrice = getRandomInt(1, 5);
+}
 //tsx src/main.ts
 
 
