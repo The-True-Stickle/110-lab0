@@ -12,6 +12,7 @@ class LemonadeStand {
     currentCups: number;
     currentLemons: number;
     currentSugar: number;
+    currentLemonadeCups: number;
 }
 
 class GameManager {
@@ -32,13 +33,27 @@ function PrintOutNewDay (currentDay: number, currentWeather: number) {
 
 }
 
+function CalculateDayResults (currentDay: number, cupsLeft: number, lemonsLeft: number, sugarLeft: number, weather: number) {
 
+    const lemonadeSold = getRandomInt(1 * (weather * 0.2), 4 + 1 * (weather * 0.2));
+
+    if (lemonadeStand.currentLemonadeCups > lemonadeSold) {
+        lemonadeStand.currentCash = lemonadeStand.currentCash + (lemonadeStand.currentLemonadeCups - lemonadeSold) * 3;
+    }
+    else {
+        lemonadeStand.currentCash = lemonadeStand.currentCash + (lemonadeStand.currentLemonadeCups) * 3;
+    }
+
+    //lemonadeStand.currentCash = 2;
+    PrintOutDayResults(gameManager.currentDay, lemonadeStand.currentCash, lemonadeSold, lemonadeStand.currentCups, lemonadeStand.currentLemons, lemonadeStand.currentSugar);
+
+}
 
 function PrintOutDayResults (currentDay: number, currentCash: number, lemonadeSold: number, cupsLeft: number, lemonsLeft: number, sugarLeft: number) {
 
     console.log("You finished day " + currentDay + "\n");
-    console.log("You sold " + lemonadeSold + " cups of lemonade today at $3 each. \n");
-    console.log("Your current cash is " + currentCash + " dollars\n");
+    console.log(lemonadeSold + " people wanted to buy a cup of lemonade today at $3 each. \n");
+    console.log("Your current cash is " + lemonadeStand.currentCash + " dollars\n");
     console.log("Supplies:");
     console.log(cupsLeft + " cups");
     console.log(lemonsLeft + " lemons");
@@ -48,6 +63,7 @@ function PrintOutDayResults (currentDay: number, currentCash: number, lemonadeSo
     gameManager.currentDay++;
     beginNewDay();
 }
+
 
  
 
@@ -68,21 +84,27 @@ const lemonadeStand = new LemonadeStand();
 //Set the values for the first day.
 gameManager.currentDay = 1;
 lemonadeStand.currentCash = 15;
-gameManager.currentWeather = getRandomInt(15, 115);
+lemonadeStand.currentSugar = 5;
+lemonadeStand.currentCups = 3;
+lemonadeStand.currentLemons = 4;
+lemonadeStand.currentLemonadeCups = 0;
+
 
 
 
 function beginNewDay() {
     console.log("\n----------\n");
-
+    gameManager.currentWeather = getRandomInt(15, 115);
     PrintOutNewDay(gameManager.currentDay, gameManager.currentWeather);
     const answer = null;
-rl.question('I will... (G - Go to the shop, S - Start the day, L - Make lemonade, I - Look at my inventory)\n ', (answer) => {
+
+
+
+rl.question('I will... (G - Go to the shop, S - Start the day)\n ', (answer) => {
     console.log("\n----------\n");
 
     if (answer == 'S') {
-        PrintOutDayResults(gameManager.currentDay, lemonadeStand.currentCash, 4, 5, 4, 1);
-
+        CalculateDayResults(gameManager.currentDay, lemonadeStand.currentCups, lemonadeStand.currentLemons, lemonadeStand.currentSugar, gameManager.currentWeather);
     }
     else if (answer == 'G') {
         console.log("Going to shop");
